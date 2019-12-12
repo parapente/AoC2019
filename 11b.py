@@ -18,6 +18,7 @@ relbase = 0
 robotpos = (0, 0)  # x, y
 robothead = 0  # heading (0 - up, 1 - right, 2 - down, 3 - left)
 painted = dict()
+painted[(0, 0)] = 1
 outcount = 0
 while ip >= 0:
     op = data[ip]
@@ -193,4 +194,35 @@ while ip >= 0:
         print('Error! Found op value: ', data[ip])
         sys.exit(1)
 print('Done!')
-print('Painted panels:', len(painted))
+minx = 0
+miny = 0
+maxx = 0
+maxy = 0
+for key, _ in painted.items():
+    # print(key, val)
+    if key[0] < minx:
+        minx = key[0]
+    if key[0] > maxx:
+        maxx = key[0]
+    if key[1] < miny:
+        miny = key[1]
+    if key[1] > maxy:
+        maxy = key[1]
+# print(minx, maxx, miny, maxy)
+panel_r = [0] * (maxx - minx + 1)
+panels = list()
+for _ in range(maxy - miny + 1):
+    panels.append(panel_r[:])
+for key, val in painted.items():
+    x = 0 - minx + key[0]
+    y = 0 - miny + key[1]
+    # print(x, y, val)
+    panels[y][x] = val
+for y in range(maxy - miny, -1, -1):
+    for x in range(maxx - minx + 1):
+        # print(x, y)
+        if panels[y][x]:
+            print('#', end='')
+        else:
+            print('.', end='')
+    print()
